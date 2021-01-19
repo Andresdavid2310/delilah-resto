@@ -5,8 +5,8 @@ import userRouter from './user';
 
 const router = routerx();
 
-router.use('/product', productRouter);
-router.use('/order', orderRouter);
-router.use('/user', userRouter);
+router.use('/products', productRouter);
+router.use('/orders', orderRouter);
+router.use('/users', userRouter);
 
 export default router;

@@ -1,126 +1,118 @@
 import bcrypt from 'bcryptjs';
-import token from '../services/token';
+import sequelize from '../database/db';
+import jwt from 'jsonwebtoken';
 
-export default {
-     add: async(req,res,next)=>{
-          try {
-               req.body.password = await bcrypt.hash(req.body.password,10);
-               const reg = await models.Usuario.create(req.body);   
-               res.status(200).json(reg);
-          } catch (e) {
-               res.status(500).send({
-                    message:'Ocurrió un error'
-               });   
-               next(e);
-          }
-     },
-     query: async(req,res,next)=>{
-          try {
-               const reg = await models.Usuario.findOne({_id:req.query._id});
-               if(!reg){
-                    res.status(404).send({
-                         message:'El registro no existe'
-                    });
-               }else{
-                    res.status(200).json(reg);    
-               }                    
-          } catch (e) {
-               res.status(500).send({
-                    message:'Ocurrió un error'
-               });   
-               next(e);
-          }
+export default{
+	add: async (req, res) => {
+		let { username, name, email, phone, address, password, is_admin } = await req.body;
+		if (!is_admin) is_admin = false;
+		await sequelize.query(
+			'INSERT INTO users (username, name, email, phone, address, password, is_admin ) values (?,?,?,?,?,?,?)',
+			{
+				replacements: [username, name, email, phone, address, password, is_admin],
+			}
+		);
+		const response = await sequelize.query('SELECT * FROM users WHERE user_id=(SELECT max(user_id) FROM users)', {
+			type: sequelize.QueryTypes.SELECT,
+		});
+		res.status(201).json({ ok: true, message: 'User created successfully in the database', data: response[0] });
+	},
 
-     },
-     list: async(req,res,next)=>{
-          try {
-               let valor = req.query.valor;
-               const reg = await models.Usuario.find({$or:[{'nombre':new RegExp(valor,'i')},{'email':new RegExp(valor,'i')}]},{createdAt:0}).sort({'createdAt':-1});
-               res.status(200).json(reg);
-          } catch (e) {
-               res.status(500).send({
-                    message:'Ocurrió un error'
-               });   
-               next(e);
-          }
-     },
-     update: async(req,res,next)=>{
-          try {
-               let pas = req.body.password;
-               const reg0 =  await models.Usuario.findOne({_id:req.body._id});
+	generationToken: async (req, res) => {
+		const userData = req.body;
+		const token = jwt.sign(userData, 'clavesecretaparagenerartoken');
+		return res.status(200).json({ ok: true, token: token, message: 'Successful operation' });
+	},
 
-               if(pas!= reg0.password){
-                    req.body.password = await bcrypt.hash(req.body.password, 10);
-               }
-     
-               const reg =  await models.Usuario.findByIdAndUpdate({_id:req.body._id}, {rol: req.body.rol, nombre:req.body.nombre, tipo_documento:req.body.tipo_documento, num_documento:req.body.num_documento, direccion:req.body.direccion, telefono:req.body.telefono,email:req.body.email, password:req.body.password});
-               res.status(200).json(reg);
-          } catch (e) { 
-               res.status(500).send({
-                    message:'Ocurrió un error'
-               });   
-               next(e);
-          }
-     },
-     remove: async(req,res,next)=>{
-          try {
-               const reg = await models.Usuario.findByIdAndDelete({_id:req.body._id});
-               res.status(200).json(reg);
-          } catch (e) {
-               res.status(500).send({
-                    message:'Ocurrió un error'
-               });   
-               next(e);
-          }
-     },
-     activate: async(req,res,next)=>{
-          try {
-               const reg = await models.Usuario.findByIdAndUpdate({_id:req.body._id}, {estado:1});
-               res.status(200).json(reg);
-          } catch (e) {
-               res.status(500).send({
-                    message:'Ocurrió un error'
-               });   
-               next(e);
-          }
-     },
-     deactivate: async(req,res,next)=>{
-          try {
-               const reg = await models.Usuario.findByIdAndUpdate(
-               {_id:req.body._id}, {estado:0});
-               res.status(200).json(reg);
-          } catch (e) {
-               res.status(500).send({
-                    message:'Ocurrió un error'
-               });   
-               next(e);
-          }
-     },
+	list: async (req, res) =>{
+		const response = await sequelize.query('SELECT * FROM users', { type: sequelize.QueryTypes.SELECT });
+		res.status(200).json({ ok: true, message: 'Successful operation', data: response });
+	},
 
-     login: async(req,res,next) =>{
-          try {
-               let user = await models.Usuario.findOne({email:req.body.email, estado:1});
-               if(user){
-                    let match  = await bcrypt.compare(req.body.password, user.password);
-                    if(match){
-                         let tokenReturn = await token.encode(user.id);
-                         res.status(200).json({user,tokenReturn});
-                    }else{
-                         res.status(404).send({
-                              message:'Password Incorrecto'
-                         });
-                    }
-               }else{
-                    res.status(404).send({
-                         message:'No existe el usuario'
-                    });
-               }
-          } catch (e) {
-               res.status(500).send({
-                    message:'Ocurrió un error'
-               });   
-               next(e);
-          }
-     }
+	query: async (req, res) => {
+		const user_id = await req.params.id;
+		const response = await sequelize.query('SELECT * FROM users WHERE user_id = ?', {
+			replacements: [user_id],
+			type: sequelize.QueryTypes.SELECT,
+		});
+		res.status(200).json({ ok: true, message: 'Successful operation', data: response[0] 
+		});
+	},
+	
+	update: async (req, res) =>{
+		try {
+			const user_id = await req.params.id;
+	
+			const { username, name, email, phone, address, password, is_admin } = await req.body;
+	
+			const response = await sequelize.query('SELECT * FROM users WHERE user_id = ?', {
+				replacements: [user_id],
+				type: sequelize.QueryTypes.SELECT,
+			});
+	
+			if (username || name || email || phone || address || password || is_admin) {
+				Object.assign(response[0], req.body);
+	
+				const { username, name, email, phone, address, password, is_admin } = response[0];
+	
+				await sequelize.query(
+					`UPDATE users SET username = ?, name = ?, email = ?, phone = ?, 
+					address = ?, password = ?, is_admin = ? WHERE user_id = ?`,
+					{ replacements: [username, name, email, phone, address, password, is_admin, user_id] }
+				);
+	
+				res.status(200).json({ ok: true, message: 'Successful operation', data: response[0] });
+			} else throw new Error('Unexpected error');
+		} catch (e) {
+			res.status(400).json({ ok: false, message: e.message });
+		}
+	},
+
+	
+	remove: async (req, res) => {
+		const user_id = await req.params.id;
+		const order_id = await sequelize.query('SELECT order_id FROM orders WHERE  user_id= ? ', { 
+			replacements: [user_id],
+			type: sequelize.QueryTypes.SELECT,
+		});
+		order_id.forEach(async (order) => {
+			await sequelize.query('DELETE FROM orders_products WHERE order_id = ?', { replacements: [order.order_id] });
+		});
+		await sequelize.query('DELETE FROM orders WHERE user_id = ?', 
+		{ replacements: [user_id] });
+		await sequelize.query('DELETE FROM users WHERE user_id = ?', { replacements: [user_id] });
+		res.status(200).json({ ok: true, message: 'User was deleted' });
+	},
+
+	activate: async (req, res) => {
+		try {
+			const user_id = await req.params.id;
+	
+			await sequelize.query(
+				`UPDATE users SET is_enabled = true WHERE user_id = ?`,
+				{ replacements: [user_id] }
+			);
+			
+			res.status(200).json({ ok: true, message: 'Successful operation'});
+			
+		} catch (e) {
+			res.status(400).json({ ok: false, message: e.message });
+		}
+	},
+
+	deactivate: async (req, res) => {
+		try {
+			const user_id = await req.params.id;
+	
+			await sequelize.query(
+				`UPDATE users SET is_enabled = false WHERE user_id = ?`,
+				{ replacements: [user_id] }
+			);
+			
+			res.status(200).json({ ok: true, message: 'Successful operation'});
+			
+		} catch (e) {
+			res.status(400).json({ ok: false, message: e.message });
+		}
+	}
 }
-

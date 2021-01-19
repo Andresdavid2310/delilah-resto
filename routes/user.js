@@ -1,16 +1,37 @@
 import routerx from 'express-promise-router';
-import UserController from '../controllers/UsuarioController';
-import auth from '../middlewares/auth';
+import middlewares from '../middlewares/index';
+import UserController from '../controllers/UserController';
 
 const router = routerx();
 
-router.post('/add', auth.verifyAdministrador, UserController.add);
-router.get('/query', auth.verifyAdministrador, UserController.query);
-router.get('/list', auth.verifyAdministrador, UserController.list);
-router.put('/update', auth.verifyAdministrador, UserController.update);
-router.delete('/remove', auth.verifyAdministrador,UserController.remove);
-router.put('/activate', auth.verifyAdministrador,UserController.activate);
-router.put('/deactivate', auth.verifyAdministrador,UserController.deactivate);
-router.post('/login', UserController.login);
+router.post('/add', middlewares.validateData, UserController.add);
+router.get('/list', middlewares.validateAdmin, UserController.list);
+router.post('/login' ,middlewares.loginUser, UserController.generationToken);
+router.get('/query/:id', middlewares.validateIdUser , UserController.query);
+
+router.put('/activate/:id', middlewares.validateIdUser,middlewares.validateAdmin,
+     UserController.activate
+);
+
+router.put('/deactivate/:id', 
+     middlewares.validateIdUser,
+     middlewares.validateAdmin,
+     UserController.deactivate
+);
+
+router.put(
+     '/:id',
+     middlewares.valideUserExits,
+     middlewares.validateIdUser,
+     middlewares.validateAdmin,
+     UserController.update
+);
+
+router.delete(
+     '/:id',
+     middlewares.validateIdUser,
+     middlewares.validateAdmin,
+     UserController.remove
+);
 
 export default router; 
