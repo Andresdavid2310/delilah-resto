@@ -15,18 +15,18 @@ export default{
 		const response = await sequelize.query('SELECT * FROM users WHERE user_id=(SELECT max(user_id) FROM users)', {
 			type: sequelize.QueryTypes.SELECT,
 		});
-		res.status(201).json({ ok: true, message: 'User created successfully in the database', data: response[0] });
+		res.status(200).json({message: 'User created successfully in the database', data: response[0] });
 	},
 
 	generationToken: async (req, res) => {
 		const userData = req.body;
 		const token = jwt.sign(userData, 'clavesecretaparagenerartoken');
-		return res.status(200).json({ ok: true, token: token, message: 'Successful operation' });
+		return res.status(200).json({ token: token, message: 'Successful operation' });
 	},
 
 	list: async (req, res) =>{
 		const response = await sequelize.query('SELECT * FROM users', { type: sequelize.QueryTypes.SELECT });
-		res.status(200).json({ ok: true, message: 'Successful operation', data: response });
+		res.status(200).json({ message: 'Successful operation', data: response });
 	},
 
 	query: async (req, res) => {
@@ -35,7 +35,7 @@ export default{
 			replacements: [user_id],
 			type: sequelize.QueryTypes.SELECT,
 		});
-		res.status(200).json({ ok: true, message: 'Successful operation', data: response[0] 
+		res.status(200).json({message: 'Successful operation', data: response[0] 
 		});
 	},
 	
@@ -61,10 +61,10 @@ export default{
 					{ replacements: [username, name, email, phone, address, password, is_admin, user_id] }
 				);
 	
-				res.status(200).json({ ok: true, message: 'Successful operation', data: response[0] });
+				res.status(200).json({message: 'User was modified', data: response[0] });
 			} else throw new Error('Unexpected error');
 		} catch (e) {
-			res.status(400).json({ ok: false, message: e.message });
+			res.status(400).json({ message: e.message });
 		}
 	},
 
@@ -81,7 +81,7 @@ export default{
 		await sequelize.query('DELETE FROM orders WHERE user_id = ?', 
 		{ replacements: [user_id] });
 		await sequelize.query('DELETE FROM users WHERE user_id = ?', { replacements: [user_id] });
-		res.status(200).json({ ok: true, message: 'User was deleted' });
+		res.status(200).json({message: 'User was deleted'});
 	},
 
 	activate: async (req, res) => {
@@ -93,10 +93,10 @@ export default{
 				{ replacements: [user_id] }
 			);
 			
-			res.status(200).json({ ok: true, message: 'Successful operation'});
+			res.status(200).json({message: 'User successfully activate'});
 			
 		} catch (e) {
-			res.status(400).json({ ok: false, message: e.message });
+			res.status(400).json({message: e.message });
 		}
 	},
 
@@ -109,10 +109,10 @@ export default{
 				{ replacements: [user_id] }
 			);
 			
-			res.status(200).json({ ok: true, message: 'Successful operation'});
+			res.status(200).json({message: 'User successfully deactivate'});
 			
 		} catch (e) {
-			res.status(400).json({ ok: false, message: e.message });
+			res.status(400).json({message: e.message});
 		}
 	}
 }

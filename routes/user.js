@@ -29,6 +29,7 @@ router.put(
 
 router.delete(
      '/:id',
+     middlewares.valideUserExits,
      middlewares.validateIdUser,
      middlewares.validateAdmin,
      UserController.remove

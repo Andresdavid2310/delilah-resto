@@ -17,9 +17,9 @@ export default{
 	
 					const userRepeated = response.find((user) => user.email == email || user.username == username);
 	
-					if (userRepeated !== undefined) throw new Error('Error, Previously registered user');
+					if (userRepeated !== undefined) throw new Error('The user is already registered');
 					else return next();
-				} else throw new Error('Error, missing data');
+				} else throw new Error('Error validating input data');
 			}
 	
 			if (req.path == '/products') {
@@ -32,13 +32,13 @@ export default{
 	
 					const productRepeated = response.find((product) => product.name_product == name_product || product.description == description);
 	
-					if (productRepeated !== undefined) throw new Error('Error, Previously registered product');
+					if (productRepeated !== undefined) throw new Error('The product is already registered');
 					else return next();
-				} else throw new Error('Error, missing data');
+				} else throw new Error('Error validating input data');
 			}
 		} catch (e) {
-			if (e.message === 'Error, missing data') return res.status(400).json({ ok: false, message: e.message });
-			else return res.status(409).json({ ok: false, message: e.message });
+			if (e.message === 'Error validating input data') return res.status(400).json({message: e.message });
+			else return res.status(409).json({ message: e.message });
 		}
 	},
 	
@@ -53,10 +53,10 @@ export default{
 			const userRepeated = response.find((user) => user.email == email || user.username == username);
 			console.log(userRepeated);
 			if (userRepeated !== undefined) return next();
-			else throw new Error('Error, Previously registered user'); 
+			else throw new Error('User is not registered'); 
 		} catch (e) {
-			if (e.message === 'Error, missing data') return res.status(400).json({ ok: false, message: e.message });
-			else return res.status(409).json({ ok: false, message: e.message });
+			if (e.message === 'Error validating input data') return res.status(400).json({message: e.message });
+			else return res.status(409).json({message: e.message });
 		}
 	},
 	
@@ -70,9 +70,9 @@ export default{
 			const registered = responseData.find((user) => user.username == username && user.password == password);
 	
 			if (registered !== undefined) return next();
-			else throw new Error('Error, Incorrect credentials');
+			else throw new Error('Invalid Username/password');
 		} catch (e) {
-			return res.status(401).json({ ok: false, message: e.message });
+			return res.status(401).json({message: e.message });
 		}
 	},
 
@@ -103,14 +103,14 @@ export default{
 			type: sequelize.QueryTypes.SELECT,});
 	
 			if (adminData[0].is_admin == 1) next();
-			else throw new Error('Error, only an admin user can do this');
+			else throw new Error('Operation not allowed, user is not admin');
 
 		} catch (e) {
-			if (e.message === 'Error, only an admin user can do this')
-			return res.status(403).json({ ok: false, message: e.message });
+			if (e.message === 'Operation not allowed, user is not admin')
+			return res.status(403).json({message: e.message });
 			return res
 			.status(409)
-	 		.json({ ok: false, message: 'Error, you cannot perform this action   because you aren´t registered' });
+	 		.json({message: 'Error, you cannot perform this action  because you aren´t registered' });
 		}
 	},
 
@@ -134,9 +134,9 @@ export default{
 			const exist = response.find((id) => id.user_id == user_id);
 	
 			if (exist) return next();
-			else throw new Error('Error, not found');
+			else throw new Error('The specified resource was not found');
 		} catch (e) {
-			return res.status(404).json({ ok: false, message: e.message });
+			return res.status(404).json({message: e.message });
 		}
 	},
 	
@@ -181,6 +181,6 @@ export default{
 	
 	error: async (err, res, next) => {
 		if (!err) return next();
-		res.status(500).send('Error, something was wrong');
+		res.status(500).send('An error occurred');
 	}
 }
