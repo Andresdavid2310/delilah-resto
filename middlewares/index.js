@@ -5,44 +5,42 @@ export default{
 
 	validateData: async (req, res, next) =>{
 		try {
-			if (req.path == '/add') {
+			const { username, name, email, phone, address, password } = await req.body;
 	
-				const { username, name, email, phone, address, password } = await req.body;
-				console.log(username, name, email, phone, address, password);
+			if (username && name && email && phone && address && password) {
+				const response = await sequelize.query('SELECT users.email, users.username FROM users', {
+					type: sequelize.QueryTypes.SELECT,
+				});
 	
-				if (username && name && email && phone && address && password) {
-					const response = await sequelize.query('SELECT users.email, users.username FROM users', {
-						type: sequelize.QueryTypes.SELECT,
-					});
+				const userRepeated = response.find((user) => user.email == email || user.username == username);
 	
-					const userRepeated = response.find((user) => user.email == email || user.username == username);
-	
-					if (userRepeated !== undefined) throw new Error('The user is already registered');
-					else return next();
-				} else throw new Error('Error validating input data');
-			}
-	
-			if (req.path == '/products') {
-				const { name_product, description, img_url_product, price } = await req.body;
-	
-				if (name_product && description && img_url_product && price) {
-					const response = await sequelize.query('SELECT products.name_product, products.description FROM products', {
-						type: sequelize.QueryTypes.SELECT,
-					});
-	
-					const productRepeated = response.find((product) => product.name_product == name_product || product.description == description);
-	
-					if (productRepeated !== undefined) throw new Error('The product is already registered');
-					else return next();
-				} else throw new Error('Error validating input data');
-			}
+				if (userRepeated !== undefined) throw new Error('The user is already registered');
+				else return next();
+			} else throw new Error('Error validating input data');
 		} catch (e) {
 			if (e.message === 'Error validating input data') return res.status(400).json({message: e.message });
 			else return res.status(409).json({ message: e.message });
 		}
 	},
-	
-	valideUserExits: async (req, res, next) => {
+
+	validateProduct : async (req,res, next) =>{
+		try{
+			const { name_product, description, img_url_product, price } = await req.body;
+			if (name_product && description && img_url_product && price) {
+				const response = await sequelize.query('SELECT products.name_product, products.description FROM products', {
+					type: sequelize.QueryTypes.SELECT,
+				});
+				const productRepeated = response.find((product) => product.name_product == name_product || product.description == description);
+				if (productRepeated !== undefined) throw new Error('The product is already registered');
+				else return next();
+			} else throw new Error('Error validating input data');
+		} catch (e) {
+			if (e.message === 'Error validating input data') return res.status(400).json({message: e.message });
+			else return res.status(409).json({ message: e.message });
+		}
+	},
+
+	validateUserExits: async (req, res, next) => {
 		try {
 			const { username, email } = await req.body;
 	
@@ -51,7 +49,6 @@ export default{
 			});
 	
 			const userRepeated = response.find((user) => user.email == email || user.username == username);
-			console.log(userRepeated);
 			if (userRepeated !== undefined) return next();
 			else throw new Error('User is not registered'); 
 		} catch (e) {
@@ -75,23 +72,6 @@ export default{
 			return res.status(401).json({message: e.message });
 		}
 	},
-
-	/* validateJwt: async (req, res, next) =>{ */
-	/* 	try { */
-	/* 		if (req.path !== '/add' && req.path !== '/login') { */
-	/* 			const token = req.headers.authorization.split(' ')[1]; */
-	/* 			const verifyToken = jwt.verify(token, 'clavesecretaparagenerartoken') *//* ; */
-	/* 	 */
-	/* 			if (verifyToken) { */
-	/* 				req.token = verifyToken; */
-	/* 				console.log(req.token) */
-	/* 				return next(); */
-	/* 			} */
-	/* 		} else return next(); */
-	/* 	} catch (e) { */
-	/* 		return res.status(401).json({ ok: false, message: 'Error, Invalid Token' } *//* ); */
-	/* 	} */
-	/* }, */
 
 	validateAdmin: async (req, res, next) => {
 		try {
@@ -121,9 +101,9 @@ export default{
 			const exist = response.find((id) => id.product_id == product_id);
 	
 			if (exist) return next();
-			else throw new Error('Error, not found');
+			else throw new Error('The specified resource was not found');
 		} catch (e) {
-			return res.status(404).json({ ok: false, message: e.message });
+			return res.status(404).json({message: e.message });
 		}
 	},
 
@@ -147,14 +127,14 @@ export default{
 			if (payment_method && info_order) {
 				if (payment_method == 'cash' || payment_method == 'card') {
 					info_order.forEach((order) => {
-						if (!order.product_id || !order.quantity) throw new Error('Error, missing data');
+						if (!order.product_id || !order.quantity) throw new Error('Error validating input data');
 					});
 					return next();
-				} else throw new Error('Error, invalid payment method');
-			} else throw new Error('Error, missing data');
+				} else throw new Error('Error invalid payment method');
+			} else throw new Error('Error validating input data');
 		} catch (e) {
-			if (e.message === 'Error, missing data') return res.status(400).json({ ok: false, message: e.message });
-			else return res.status(403).json({ ok: false, message: e.message });
+			if (e.message === 'Error validating input data') return res.status(400).json({ message: e.message });
+			else return res.status(403).json({message: e.message });
 		}
 	},
 	
@@ -172,10 +152,10 @@ export default{
 					status == 'new'
 				)
 					next();
-				else throw new Error('Error, Input invalid');
-			} else throw new Error('Error, Input invalid');
+				else throw new Error('Error, validating data');
+			} else throw new Error('Error, validating data');
 		} catch (e) {
-			res.status(400).json({ ok: false, message: e.message });
+			res.status(400).json({message: e.message });
 		}
 	},
 	

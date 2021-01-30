@@ -21,7 +21,7 @@ router.put('/deactivate/:id',
 
 router.put(
      '/:id',
-     middlewares.valideUserExits,
+     middlewares.validateUserExits,
      middlewares.validateIdUser,
      middlewares.validateAdmin,
      UserController.update
@@ -29,7 +29,6 @@ router.put(
 
 router.delete(
      '/:id',
-     middlewares.valideUserExits,
      middlewares.validateIdUser,
      middlewares.validateAdmin,
      UserController.remove

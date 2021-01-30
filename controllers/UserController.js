@@ -1,10 +1,10 @@
-import bcrypt from 'bcryptjs';
 import sequelize from '../database/db';
 import jwt from 'jsonwebtoken';
 
 export default{
 	add: async (req, res) => {
 		let { username, name, email, phone, address, password, is_admin } = await req.body;
+		
 		if (!is_admin) is_admin = false;
 		await sequelize.query(
 			'INSERT INTO users (username, name, email, phone, address, password, is_admin ) values (?,?,?,?,?,?,?)',
@@ -21,7 +21,7 @@ export default{
 	generationToken: async (req, res) => {
 		const userData = req.body;
 		const token = jwt.sign(userData, 'clavesecretaparagenerartoken');
-		return res.status(200).json({ token: token, message: 'Successful operation' });
+		return res.status(200).json({ message: 'Successful operation', token: token});
 	},
 
 	list: async (req, res) =>{

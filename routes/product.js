@@ -6,7 +6,7 @@ const router = routerx();
 
 router.post(
      '/add',
-     middlewares.validateData,
+     middlewares.validateProduct,
      middlewares.validateAdmin,
      ProductController.add
 );

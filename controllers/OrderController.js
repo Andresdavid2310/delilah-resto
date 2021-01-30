@@ -1,11 +1,14 @@
 import sequelize from '../database/db';
 import detailOrders from '../utils/';
+import jwt from 'jsonwebtoken';
 
 export default{
 	add: async (req, res) => {
 		try {
-			const { payment_method, info_order } = req.body;
-			const dataUser = req.token.username;
+			const { info_order, payment_method, description  } = req.body;
+			const token = req.headers.authorization.split(' ')[1];
+			const validatedUser = jwt.verify(token, 'clavesecretaparagenerartoken');
+			const dataUser = validatedUser.username;
 			let total = 0;
 			let product;
 	
@@ -15,34 +18,37 @@ export default{
 			});
 	
 			const { user_id } = userId[0];
-	
-			for (i = 0; i < info_order.length; i++) {
-				product = await sequelize.query('SELECT price, is_enabled, name  FROM products WHERE product_id = ?', {
-					replacements: [info_order[i].product_id],
-					type: sequelize.QueryTypes.SELECT,
-				});
-	
-				if (product[0].is_enabled !== 0) total += product[0].price * info_order[i].quantity;
-				else res.status(409).json({ ok: false, message: `Error, the product '${product[0].name}' is not available` });
+			let i = 0;	
+			while(i<info_order.length){
+
+				product =  await sequelize.query('SELECT price, is_enabled,  name_product FROM products WHERE product_id = ?', {  replacements: [info_order[i].product_id],  type: sequelize.QueryTypes.SELECT,  });
+
+				if (product[0].is_enabled !== 0) {
+					total += product[0].price*info_order[i].quantity;
+				} 
+				else {
+					res.status(409).json({message: `Error, the product '${product[0].name}' is not available` });
+				} 
+				
+				i++;
 			}
+							
+			await sequelize.query('INSERT INTO orders (user_id, total, status,   payment_method, description) values (?,?,?,?,?)', { 
+			replacements: [user_id, total , 'new', payment_method, description],	
+			}); 
+			
+			const response = await sequelize.query( 
+			 	'SELECT order_id FROM orders WHERE order_id=(SELECT max(order_id)  FROM orders)', { type: sequelize.QueryTypes.SELECT } 
+			); 
 	
-			await sequelize.query('INSERT INTO orders (user_id, total, status, payment_method, description ) values (?,?,?,?)', {
-				replacements: [user_id, total, 'new', payment_method, description],
-			});
-	
-			const response = await sequelize.query(
-				'SELECT order_id FROM orders WHERE order_id=(SELECT max(order_id) FROM orders)',
-				{ type: sequelize.QueryTypes.SELECT }
-			);
-	
-			info_order.forEach(async (product) => {
-				await sequelize.query('INSERT INTO orders_products (order_id, product_id, product_amount ) values (?,?,?)', {
-					replacements: [response[0].order_id, product.product_id, product.product_amount],
-				});
-			});
-			res.status(200).json({ ok: true, message: 'Generated order' });
+			info_order.forEach(async (product) => { 
+				await sequelize.query('INSERT INTO orders_products (order_id,   product_id, product_amount ) values (?,?,?)', { 
+				replacements: [response[0].order_id, product.product_id, product.quantity], 
+				}); 
+			}); 
+			res.status(200).json({message: 'Order created succesfully' });
 		} catch (e) {
-			res.status(404).json({ ok: false, message: 'Error, product not found' });
+			res.status(404).json({message: 'Error, product not found' });
 		}
 	},
 	
@@ -62,13 +68,15 @@ export default{
 				return order;
 			})
 		);
-		res.status(200).json({ ok: true, message: 'Successful request', data: detailed_orders });
+		res.status(200).json({message: 'Sucessful operation', data: detailed_orders });
 	},
 
 	query: async (req, res) =>{
 		try {
 			const orderId = req.params.id;
-			const dataUser = req.token.username;
+			const token = req.headers.authorization.split(' ')[1];
+			const validatedUser = jwt.verify(token, 'clavesecretaparagenerartoken');
+			const dataUser = validatedUser.username;
 			const orderUserExist = await sequelize.query('SELECT user_id, order_id FROM orders', {
 				type: sequelize.QueryTypes.SELECT,
 			});
@@ -90,7 +98,7 @@ export default{
 	
 					const detailed_orders = await detailOrders.details(orders, orderId);
 	
-					res.status(200).json({ ok: true, message: 'Successful request', data: detailed_orders[0] });
+					res.status(200).json({message: 'Successful operation', data: detailed_orders[0] });
 				} else {
 					const findId = orderUserExist.find((order) => order.user_id == userData[0].user_id);
 	
@@ -102,17 +110,17 @@ export default{
 							AND orders.user_id =${userData[0].user_id}`,
 							{ type: sequelize.QueryTypes.SELECT }
 						);
-						// When a person without permission tries to view other people's orders, This error is generated
+						
 						if (!orders[0]) throw new Error();
 	
 						const detailed_orders = await detailOrders.details(orders, orderId);
 	
-						res.status(200).json({ ok: true, message: 'Successful request', data: detailed_orders[0] });
-					} else res.status(400).json({ ok: false, message: 'Error,  the user has no order' });
+						res.status(200).json({message: 'Successful operation', data: detailed_orders[0] });
+					} else res.status(400).json({message: 'Error,  the user has no order' });
 				}
-			} else res.status(404).json({ ok: false, message: 'Error,  order not found' });
+			} else res.status(404).json({message: 'Error,  order not found' });
 		} catch (e) {
-			res.status(403).json({ ok: false, message: 'Error,  this user cannot see other people´s orders' });
+			res.status(403).json({message: 'Error,  this user cannot see other people´s orders' });
 		}
 	},
 
@@ -125,10 +133,10 @@ export default{
 	
 			if (findOrderId) {
 				await sequelize.query('UPDATE orders SET status = ? WHERE order_id = ?', { replacements: [status, orderId] });
-				res.status(200).json({ ok: true, message: 'Successful status change' });
-			} else throw new Error('Error, not found');
+				res.status(200).json({ message: 'Successful status change' });
+			} else throw new Error('Error , order not found');
 		} catch (e) {
-			res.status(404).json({ ok: false, message: e.message });
+			res.status(404).json({ message: e.message });
 		}
 	},
 
@@ -143,10 +151,10 @@ export default{
 			if (findOrderId) {
 				await sequelize.query('DELETE FROM orders_products WHERE order_id = ?', { replacements: [orderId] });
 				await sequelize.query('DELETE FROM orders WHERE order_id = ?', { replacements: [orderId] });
-				res.status(200).json({ ok: true, message: 'Order deleted' });
+				res.status(200).json({message: 'Order deleted' });
 			} else throw new Error('Error, not found');
 		} catch (e) {
-			res.status(404).json({ ok: false, message: e.message });
+			res.status(404).json({message: e.message });
 		}
 	}
 }
