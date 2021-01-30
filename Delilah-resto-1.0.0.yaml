@@ -1,0 +1,856 @@
+---
+openapi: 3.0.0
+info:
+  title: Delilah Resto
+  description: Food BackEnd API.
+  contact:
+    email: dandavi2310@hotmail.com
+  version: 1.0.0
+externalDocs:
+  description: Git Hub Repository
+  url: https://github.com/Andresdavid2310/delilah-resto.git
+servers:
+- url: https://virtserver.swaggerhub.com/AndresDavidB/delilah-resto/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: http://localhost:3000/v1
+  description: Server API Auto Mocking
+- url: http://localhost:3000/v1
+  description: Server API Auto Mocking
+security:
+- bearerAuth: []
+tags:
+- name: User
+  description: Operations with users
+- name: Products
+  description: Operations with products
+- name: Orders
+  description: Operations with orders
+paths:
+  /users:
+    get:
+      tags:
+      - User
+      summary: get user list (if admin) or account details (if not admin)
+      description: Gets a list of all existing users in the database if the user submitting the request is an administrator, otherwise the response only goes to the active user.
+      operationId: listUsers
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/UsersInfo'
+        "403":
+          description: Operation not allowed, user is not admin
+        "409":
+          description: Error, you cannot perform this action because you aren´t registered
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - User
+      summary: Create Users
+      description: Create new user in the database
+      operationId: add
+      requestBody:
+        description: Created user object
+        content:
+          aplication/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "200":
+          description: User created successfully in the database
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: Error validating input data
+        "409":
+          description: The user is already registered
+        "500":
+          description: An error occurred
+      security: []
+  /users/activate/:id:
+    put:
+      tags:
+      - User
+      summary: active user Data
+      operationId: activateUser
+      requestBody:
+        description: user to activate
+        content:
+          apliccation/json:
+            schema:
+              $ref: '#/components/schemas/body'
+      responses:
+        "200":
+          description: User successfully activate
+        "400":
+          description: The specified resource was not found
+        "403":
+          description: Operation not allowed, user is not admin
+        "409":
+          description: Error, you cannot perform this action because you aren´t registered
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/deactivate/:id:
+    put:
+      tags:
+      - User
+      summary: Deactivate user Data
+      operationId: deActivateUser
+      requestBody:
+        description: user to Deactivate
+        content:
+          apliccation/json:
+            schema:
+              $ref: '#/components/schemas/body_1'
+      responses:
+        "200":
+          description: User successfully Deactivate
+        "400":
+          description: The specified resource was not found
+        "403":
+          description: Operation not allowed, user is not admin
+        "409":
+          description: Error, you cannot perform this action because you aren´t registered
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/login:
+    get:
+      tags:
+      - User
+      summary: allows users to log in to the system
+      operationId: LoginUser
+      parameters:
+      - name: UserName Or Email
+        in: query
+        description: The user name or email for login
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: Password
+        in: query
+        description: The password for login
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "401":
+          description: User account is disabled
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: []
+  /users/:username:
+    get:
+      tags:
+      - User
+      summary: Get user by user name(if admin)
+      operationId: queryUser
+      parameters:
+      - name: username or email
+        in: query
+        description: The User Name
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: successfull operation
+          content:
+            'aplication/json:':
+              schema:
+                $ref: '#/components/schemas/UsersInfo'
+        "404":
+          description: The specified resource was not found
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+      - User
+      summary: Edit info username(is admin)
+      description: edit the user data they receive (if it's admin)
+      operationId: updateUserAdmin
+      parameters:
+      - name: username
+        in: query
+        description: user data to update
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        description: Updated user object
+        content:
+          aplication/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: User was modified
+        "400":
+          description: Error validating input data
+        "403":
+          description: Operation not allowed, user is not admin
+        "409":
+          description: Error, you cannot perform this action because you aren´t registered
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - User
+      summary: Delete username(is admin)
+      description: Delete the user data they receive (if it's admin)
+      operationId: DeleteUserAdmin
+      parameters:
+      - name: username
+        in: query
+        description: user data to delete
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: User was delete
+        "400":
+          description: Error validating input data
+        "403":
+          description: Operation not allowed, user is not admin
+        "409":
+          description: Error, you cannot perform this action because you aren´t registered
+  /products:
+    get:
+      tags:
+      - Products
+      summary: Get list of Products
+      description: Returns a list of products (only the assets)
+      operationId: listProducts
+      parameters:
+      - name: search
+        in: query
+        description: Keyword for seach
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Succesful operation
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Products'
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Products
+      summary: Create products (if you are admin)
+      description: Add product to database
+      operationId: addProduct
+      requestBody:
+        description: keywords to search
+        content:
+          aplication/json:
+            schema:
+              $ref: '#/components/schemas/Products'
+        required: true
+      responses:
+        "200":
+          description: product created successfully
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Products'
+        "400":
+          description: Error validating input data
+        "403":
+          description: Operation not allowed, user is not admin
+        "409":
+          description: The product is already registered
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/:id:
+    get:
+      tags:
+      - Products
+      summary: Get product by Id
+      description: returns the details of the product assigned to the ID entered
+      operationId: queryProductById
+      parameters:
+      - name: id
+        in: query
+        description: The ID of the product to search for.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Succesful operation
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Products'
+        "404":
+          description: The specified resource was not found
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+      - Products
+      summary: Edit products by ID (if admin)
+      description: Edit the details of the product assigned to the ID
+      operationId: updateProduct
+      parameters:
+      - name: id
+        in: query
+        description: The ID of the product to search for.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        description: Update data
+        content:
+          aplication/json:
+            schema:
+              $ref: '#/components/schemas/Products'
+        required: true
+      responses:
+        "200":
+          description: Product update correctly
+        "400":
+          description: Error validating input data
+        "403":
+          description: Operation not allowed, user is not admin
+        "404":
+          description: The specified resource was not found
+        "409":
+          description: Error, you cannot perform this action  because you aren´t registered
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - Products
+      summary: Delete Product(is admin)
+      description: Delete the product data they receive (if it's admin)
+      operationId: DeleteProduct
+      parameters:
+      - name: id
+        in: query
+        description: The ID of the product to search for
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Product with id  was delete correctly
+        "403":
+          description: Operation not allowed, user is not admin
+        "404":
+          description: The specified resource was not found
+        "409":
+          description: Error, you cannot perform this action  because you aren´t registered
+  /products/activate/:id:
+    put:
+      tags:
+      - Products
+      summary: active product Data
+      operationId: activateProduct
+      requestBody:
+        description: Product to activate
+        content:
+          apliccation/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+      responses:
+        "200":
+          description: Product successfully activate
+        "400":
+          description: The specified resource was not found
+        "403":
+          description: Operation not allowed, user is not admin
+        "409":
+          description: Error, you cannot perform this action because you aren´t registered
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/deactivate/:id:
+    put:
+      tags:
+      - Products
+      summary: Deactive Product Data
+      operationId: deActivateProduct
+      requestBody:
+        description: product to Deactivate
+        content:
+          apliccation/json:
+            schema:
+              $ref: '#/components/schemas/body_3'
+      responses:
+        "200":
+          description: Product successfully Deactivate
+        "400":
+          description: The specified resource was not found
+        "403":
+          description: Operation not allowed, user is not admin
+        "409":
+          description: Error, you cannot perform this action because you aren´t registered
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /orders:
+    get:
+      tags:
+      - Orders
+      summary: Get list of Orders
+      description: It returns a list of orders, if the user is admin it returns all the orders
+      operationId: listOrders
+      responses:
+        "200":
+          description: sucessful operation
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Orders'
+        "403":
+          description: Operation not allowed, user is not admin
+        "409":
+          description: Error, you cannot perform this action  because you ren´t registered
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Orders
+      summary: Create a order
+      description: Add order to database
+      operationId: addOrder
+      requestBody:
+        description: Order to create
+        content:
+          aplication/json:
+            schema:
+              $ref: '#/components/schemas/NewOrder'
+        required: true
+      responses:
+        "200":
+          description: Order created succesfully
+        "400":
+          description: Error validating input data
+        "403":
+          description: Error invalid payment method
+        "404":
+          description: The specified resource was not found
+        "409":
+          description: the product ${product name} is not available
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /orders/:id:
+    get:
+      tags:
+      - Orders
+      summary: Get order by Id
+      description: returns the details of the order assigned to the ID entered
+      operationId: listOrderById
+      parameters:
+      - name: id
+        in: query
+        description: The ID of the product to search for
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: succesul operation
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Orders'
+        "400":
+          description: Error,  the user has no order
+        "403":
+          description: Error,  this user cannot see other people´s orders
+        "404":
+          description: Error,  order not found
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+      - Orders
+      summary: Update Orders by Id
+      description: Update a specific order
+      operationId: updateOrder
+      parameters:
+      - name: id
+        in: query
+        description: The ID of the product to search for
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        description: Order to update
+        content:
+          aplication/json:
+            schema:
+              $ref: '#/components/schemas/body_4'
+        required: true
+      responses:
+        "200":
+          description: Successful status change
+        "400":
+          description: Error, validating data
+        "403":
+          description: The order status does not allow updating
+        "404":
+          description: Error , order not found
+        "409":
+          description: Error, you cannot perform this action  because you ren´t registered
+        "500":
+          description: Unexpected error
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int64
+          example: 123456
+        username:
+          type: string
+          example: dandavi2310
+        password:
+          type: string
+          example: Admin123
+        email:
+          type: string
+          example: user@correo.com
+        address:
+          type: string
+          example: calle 9 medellin
+        name:
+          type: string
+          example: Maria Zuluaga
+        phone:
+          type: integer
+          example: 3005555657
+    UsersInfo:
+      type: array
+      items:
+        $ref: '#/components/schemas/UsersInfo_inner'
+    Product:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          example: 2222
+        name_product:
+          type: string
+          example: hot dog
+        price:
+          type: number
+          example: 9564.22
+        img_url_product:
+          type: string
+          example: https:///hot-dog.com/1
+        description:
+          type: string
+          example: hot dog with cheese, sauces and house sausage
+        is_enabled:
+          type: boolean
+          example: false
+    Products:
+      type: array
+      items:
+        $ref: '#/components/schemas/Product'
+    OrderProduct:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          example: 5555
+        order_product_id:
+          type: integer
+          example: 6666
+        product_id:
+          type: integer
+          example: 22222
+        product_amount:
+          type: integer
+          example: 11111
+    OrderProducts:
+      type: array
+      items:
+        $ref: '#/components/schemas/OrderProduct'
+    Order:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          example: 222222
+        status:
+          type: string
+          example: inprogress
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+          example: 222 delilah
+        payment_method:
+          type: string
+          example: credit card
+        total:
+          type: integer
+          example: 20000
+        user_id:
+          type: integer
+          example: 2222
+        is_enabled:
+          type: boolean
+          example: false
+    Orders:
+      type: array
+      items:
+        $ref: '#/components/schemas/Order'
+    NewOrder:
+      type: object
+      properties:
+        payment_method:
+          type: string
+          example: credit card
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewOrder_data'
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjU1NzVmYjcyMjlhMzE1YjQwZTFhMWUiLCJpYXQiOjE1OTk0Mzc3ODcsImV4cCI6MTU5OTUyNDE4N30.KVirEMPy9AzS0O8iZZFxDqpHH0PvcXGHh1ttQRNZpiU
+    Error:
+      required:
+      - error
+      type: object
+      properties:
+        error:
+          type: string
+          example: 'An error has ocurred: <error>'
+    Send:
+      type: string
+      example: Error message
+    inline_response_200:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User created successfully in the database
+        data:
+          $ref: '#/components/schemas/User'
+    body:
+      allOf:
+      - $ref: '#/components/schemas/User'
+    body_1:
+      allOf:
+      - $ref: '#/components/schemas/User'
+    inline_response_200_1:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Successful operation
+        token:
+          $ref: '#/components/schemas/Token'
+    body_2:
+      allOf:
+      - $ref: '#/components/schemas/User'
+    body_3:
+      allOf:
+      - $ref: '#/components/schemas/User'
+    body_4:
+      type: object
+      properties:
+        orderStatus:
+          type: string
+          example: in progress
+    UsersInfo_inner:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          example: 123456
+        username:
+          type: string
+          example: dandavi2310
+        password:
+          type: string
+          example: Admin123
+        email:
+          type: string
+          example: user@correo.com
+        address:
+          type: string
+          example: calle 9 medellin
+        name:
+          type: string
+          example: Maria Zuluaga
+        phone:
+          type: integer
+          example: 3005555657
+        is_admin:
+          type: boolean
+          example: false
+        is_enabled:
+          type: boolean
+          example: false
+    NewOrder_data:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          example: 2222
+        amount:
+          type: integer
+          example: 5
+  responses:
+    UnAuthorizedError:
+      description: Invalid Token
+    Disabled:
+      description: User account is disabled
+    NotAdmin:
+      description: Operation not allowed, user is not admin
+    NotFound:
+      description: The specified resource was not found
+    Default:
+      description: Unexpected error
+      content:
+        aplication/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnAuthorized:
+      description: UnAuthorized
+      content:
+        aplication/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/Send'
+          examples:
+            Token Invalidation:
+              summary: Unauthorized - Invalid Token
+              value: Unauthorized - Invalid  Token
+            Disabled Account:
+              summary: Unauthorized - Account is Disabled
+              value: Unauthorized - User account is Disabled
+    UnAuthorizedAdmin:
+      description: UnAuthorized
+      content:
+        aplication/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/Send'
+          examples:
+            Token Invalidation:
+              summary: UnAuthorized - Invalid Token
+              value: UnAuthorized - Invalid Token
+            disabled Account:
+              summary: UnAuthorized - Account  is Disabled
+              value: UnAuthorized -User Account is disabled
+            Not Admin:
+              summary: UnAuthorized - Not an admin
+              value: UnAuthorized - Not ad admin
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

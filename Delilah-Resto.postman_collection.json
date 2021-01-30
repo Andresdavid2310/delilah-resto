@@ -1,0 +1,733 @@
+{
+	"info": {
+		"_postman_id": "25eaf3c2-ec29-4103-92c8-81ae56f57e58",
+		"name": "Delilah-Resto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Agregar Ordenes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoaW11ZWxvIiwicGFzc3dvcmQiOiJBZG1pbjEyMzQ1IiwiaWF0IjoxNjExNDYyMDQ1fQ.y2h4Fc6lzWBztfQXJ3R7q3KugVqFOHu6OvW-hCS-imA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"info_order\": [\r\n        {\r\n            \"product_id\" :5,\r\n            \"quantity\":2\r\n        },\r\n\r\n        {\r\n            \"product_id\" :6,\r\n            \"quantity\":2\r\n        }   \r\n    ],\r\n    \"payment_method\": \"card\",\r\n    \"description\": \"sin cebolla y tomate\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orders/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Ordenes ",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTExOTI2MTl9.j2XUtwzmKJLKxVcjENUWOGfEciHTyIfZjNZHljt39fc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/orders/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar Orden",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTExOTI2MTl9.j2XUtwzmKJLKxVcjENUWOGfEciHTyIfZjNZHljt39fc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/orders/query/70",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders",
+								"query",
+								"70"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar Orden",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTExOTI2MTl9.j2XUtwzmKJLKxVcjENUWOGfEciHTyIfZjNZHljt39fc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\":\"cancelled\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orders/61",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders",
+								"61"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Orden",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoaW11ZWxvIiwicGFzc3dvcmQiOiJBZG1pbjEyMzQ1IiwiaWF0IjoxNjExNDYyMDQ1fQ.y2h4Fc6lzWBztfQXJ3R7q3KugVqFOHu6OvW-hCS-imA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/orders/63",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders",
+								"63"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Productos",
+			"item": [
+				{
+					"name": "Agregar Productos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoaW11ZWxvIiwicGFzc3dvcmQiOiJBZG1pbjEyMzQ1IiwiaWF0IjoxNjExNDYyMDQ1fQ.y2h4Fc6lzWBztfQXJ3R7q3KugVqFOHu6OvW-hCS-imA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name_product\":\"Hamburguesa\",\r\n    \"description\" : \"carne artesanal , pan artesanal y doble queso\",\r\n    \"img_url_product\":\"https://cocineroimprovisado.com/wp-content/uploads/2019/07/hamburguesa13-768x1024.jpg\",\r\n    \"price\": \"10000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/products/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"products",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar Productos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTExMDA4MjB9.9AD9xY-W5I_4xnI8xftG1C3pawPGNRwFBlECl98nwXI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name_product\":\"Pizza mediana\",\r\n    \"description\" : \"pizza de harina con salsa napolitana , champiñones , carne y cabano\",\r\n    \"img_url_product\":\"https://cocineroimprovisado.com/wp-content/uploads/2019/07/hamburguesa13-768x1024.jpg\",\r\n    \"price\": \"22000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/products/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"products",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Productos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTExMDE5Nzd9.wwYfWpCnHZn9WoW3ulSAXe4H4d9BuhJSGMznZX9zr2s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/products/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"products",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activar Producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTExMDE5Nzd9.wwYfWpCnHZn9WoW3ulSAXe4H4d9BuhJSGMznZX9zr2s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/products/activate/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"products",
+								"activate",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Desactivar Producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTExMDE5Nzd9.wwYfWpCnHZn9WoW3ulSAXe4H4d9BuhJSGMznZX9zr2s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/products/deactivate/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"products",
+								"deactivate",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Productos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTExMDE5Nzd9.wwYfWpCnHZn9WoW3ulSAXe4H4d9BuhJSGMznZX9zr2s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTExMDU2NzB9.7BXyidJQLMSo_0ZLHK1cTMpJ4xN5hKie2eU9dmwgjZU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/products/query/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"products",
+								"query",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Agregar Usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTEwOTk0NTh9.va5hMUBv6TxgGlclAt2ZavDh00kFxdfT-6Zs2PUauNw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"chimuelo\",\r\n    \"name\": \"chimuelo zuluaga\",\r\n    \"email\": \"chimuelo@hotmail.com\",\r\n    \"phone\" : \"2222222\",\r\n    \"address\": \"calle 9 santa marta\",\r\n    \"password\": \"Admin12345\",\r\n    \"is_admin\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loguear usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"chimuelo\",\r\n    \"password\": \"Admin12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Usuarios",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoaW11ZWxvIiwicGFzc3dvcmQiOiIxMjM0NTYiLCJpYXQiOjE2MTE0NjEzMzN9.LvHyMTGr0P8KyKmJbcIhvymbXvTes69dn7PJI2q-aKM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTA5NDA4NTB9.4P5PnCx3PCQAFGgaIinCAPEMNDI8i6NCfxojtrMSPuU\"",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"list"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuZHJlczIzMTAiLCJwYXNzd29yZCI6IkFkbWluMTIzNDUiLCJpYXQiOjE2MTA5MzE2Mjd9.oKEiyqGBKPEbJ9lmOEu98a-c0PmesZ_n3UBXmiriqDo\"",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Usuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/query/14",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"query",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoaW11ZWxvIiwicGFzc3dvcmQiOiIxMjM0NTYiLCJpYXQiOjE2MTE0NjE3NDR9.TAQgrWQYwoiAVhhNwAm3ohO6qLqvy_QN-ZhqWizGuHk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/13",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoaW11ZWxvIiwicGFzc3dvcmQiOiJBZG1pbjEyMzQ1IiwiaWF0IjoxNjExNDYxMjUyfQ.4f8ZLm6dFCeouh1gU-zAoBB4CPjtATtZ3ba3froAGko",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"chimuelo\",\r\n    \"name\": \"chimuelo daza\",\r\n    \"email\": \"chimuelo@hotmail.com\",\r\n    \"phone\" : \"2222222\",\r\n    \"address\": \"calle 9 santa martaaaaa\",\r\n    \"password\": \"123456\",\r\n    \"is_admin\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/12",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activar Usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoaW11ZWxvIiwicGFzc3dvcmQiOiIxMjM0NTYiLCJpYXQiOjE2MTE0NjEzMzN9.LvHyMTGr0P8KyKmJbcIhvymbXvTes69dn7PJI2q-aKM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/activate/12",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"activate",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Desactivar Usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoaW11ZWxvIiwicGFzc3dvcmQiOiIxMjM0NTYiLCJpYXQiOjE2MTE0NjEzMzN9.LvHyMTGr0P8KyKmJbcIhvymbXvTes69dn7PJI2q-aKM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/deactivate/12",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"deactivate",
+								"12"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
